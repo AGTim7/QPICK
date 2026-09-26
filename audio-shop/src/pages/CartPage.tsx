@@ -1,6 +1,7 @@
 import CartProduct from "../components/CartProduct";
 import { Container } from "../components/Container";
-import { useCart } from "../hooks/useCart";
+import { useCartContext } from "../context/CartContext";
+import { AnimatePresence, motion } from "motion/react";
 
 function CartPage() {
   const {
@@ -10,43 +11,59 @@ function CartPage() {
     removeFromCart,
     increaseQuantity,
     decreaseQuantity,
-  } = useCart();
+  } = useCartContext();
 
   return (
-    <main className="mt-8">
+    <main className="mt-6 sm:mt-8">
       <Container>
-        <div className="flex items-center gap-5">
-          <h2 className="text-xl">Корзина</h2>
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+          <h2 className="text-xl font-medium sm:text-2xl">Корзина</h2>
 
           <button
             onClick={removeAllFromCart}
-            className="mt-0.5 text-[15px] text-gray-400 hover:text-red-500"
+            className="text-sm text-gray-500 transition-colors hover:text-red-600 sm:text-base"
           >
             Очистить корзину
           </button>
         </div>
 
-        <div className="flex justify-between">
-          <div className="mt-4 flex flex-col gap-10">
-            {products.map(({ product, quantity }) => (
-              <CartProduct
-                key={product.id}
-                product={product}
-                quantity={quantity}
-                onIncrease={() => increaseQuantity(product.id)}
-                onDecrease={() => decreaseQuantity(product.id)}
-                onRemove={() => removeFromCart(product.id)}
-              />
-            ))}
+        <div className="mt-4 flex flex-col gap-6 lg:flex-row lg:items-start lg:gap-8">
+          <div className="flex min-w-0 flex-1 flex-col gap-5 sm:gap-8">
+            <AnimatePresence initial={false}>
+              {products.map(({ product, quantity }) => (
+                <motion.div
+                  key={product.id}
+                  layout
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{
+                    opacity: 0,
+                    height: 0,
+                    marginBottom: 0,
+                    scale: 0.98,
+                  }}
+                  transition={{ duration: 0.25, ease: "easeInOut" }}
+                  className="overflow-hidden"
+                >
+                  <CartProduct
+                    product={product}
+                    quantity={quantity}
+                    onIncrease={() => increaseQuantity(product.id)}
+                    onDecrease={() => decreaseQuantity(product.id)}
+                    onRemove={() => removeFromCart(product.id)}
+                  />
+                </motion.div>
+              ))}
+            </AnimatePresence>
           </div>
 
-          <div className="flex h-35 w-85 flex-col justify-between rounded-4xl bg-white shadow-[0_0_20px_rgba(0,0,0,0.1)]">
-            <div className="flex justify-between p-5">
-              <h3>ИТОГО</h3>
-              <p>{cartSum} ₽</p>
+          <div className="flex w-full flex-col justify-between gap-4 rounded-4xl bg-white shadow-md lg:sticky lg:top-4 lg:w-72 lg:shrink-0">
+            <div className="flex justify-between gap-4 p-4">
+              <h3 className="font-medium">ИТОГО</h3>
+              <p className="font-medium">{cartSum.toLocaleString("ru-RU")} ₽</p>
             </div>
 
-            <button className="h-20 w-full rounded-4xl bg-black text-white hover:bg-orange-500 hover:text-black">
+            <button className="w-full rounded-4xl h-18 bg-black text-sm text-white transition-colors hover:bg-orange-500 hover:text-black sm:py-4 sm:text-base">
               Перейти к оформлению
             </button>
           </div>

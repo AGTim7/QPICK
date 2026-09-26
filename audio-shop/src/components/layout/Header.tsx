@@ -1,16 +1,13 @@
 import { Link, NavLink } from "react-router-dom";
 import {Container} from "../Container";
 import { Heart, ShoppingCart } from "lucide-react";
-import { useCart } from "../../hooks/useCart";
+import { useCartContext } from "../../context/CartContext";
 
 
-interface Props{
-  className?: string;
-}
+function Header() {
 
-function Header({ className, }: Props) {
+  const { products, totalValueCart, addToCart } = useCartContext();
 
-  const { totalValueCart } = useCart();
   let totalValueFavorites = 0;
 
   return (

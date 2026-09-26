@@ -10,34 +10,68 @@ interface Props {
   onDecrease: () => void;
 }
 
-export default function CartItem({ product, className, onRemove, quantity, onIncrease, onDecrease }: Props) {
+export default function CartProduct({
+  product,
+  className,
+  onRemove,
+  quantity = 1,
+  onIncrease,
+  onDecrease,
+}: Props) {
   return (
-    <div className={`relative flex w-200 h-50 items-center gap-6 rounded-2xl bg-white p-4 shadow-[0_0_20px_rgba(0,0,0,0.1)] hover:shadow-lg ${className}`}>
-      <button className="absolute right-4 top-3 text-red-400 transition-colors hover:text-red-600" onClick={onRemove}>
-        <Trash2 size={24} />
+    <div
+      className={`relative flex w-full items-start gap-3 rounded-2xl bg-white p-3 transition-shadow sm:items-center sm:gap-5 sm:p-4 ${className}`}
+    >
+      <button
+        aria-label="Удалить товар"
+        className="absolute right-3 top-3 text-gray-400 transition-colors hover:text-red-600 sm:right-4 sm:top-4"
+        onClick={onRemove}
+      >
+        <Trash2 size={20} />
       </button>
 
-      <div className="flex h-full w-30 flex-col items-center">
-        <img src={product.img} alt={product.title} className=" w-full object-contain my-auto" />
-        <div className="flex items-center gap-4 mt-4">
-          <button onClick={onDecrease} disabled={quantity === 1} className="rounded-full bg-[#FFCE7F] p-1 text-white transition-colors hover:bg-orange-400">
-            <Minus size={18} />
+      <div className="flex w-24 shrink-0 flex-col items-center sm:w-32">
+        <img
+          src={product.img}
+          alt={product.title}
+          className="h-24 w-full object-contain sm:h-40"
+        />
+
+        <div className="mt-3 flex items-center gap-2 sm:gap-4">
+          <button
+            aria-label="Уменьшить количество"
+            onClick={onDecrease}
+            disabled={quantity === 1}
+            className="rounded-full bg-amber-300 p-1 text-white transition-colors hover:bg-orange-400 disabled:cursor-not-allowed disabled:opacity-40"
+          >
+            <Minus size={16} />
           </button>
-          <span>{quantity}</span>
-          <button onClick={onIncrease} className="rounded-full bg-[#FFCE7F] p-1 text-white transition-colors hover:bg-orange-400">
-            <Plus size={18} />
+
+          <span className="min-w-4 text-center text-sm">{quantity}</span>
+
+          <button
+            aria-label="Увеличить количество"
+            onClick={onIncrease}
+            className="rounded-full bg-amber-300 p-1 text-white transition-colors hover:bg-orange-400"
+          >
+            <Plus size={16} />
           </button>
         </div>
       </div>
 
-      <div className="flex h-full flex-col justify-center gap-1">
-        <h3 className="text-black">{product.title}</h3>
-        <p className="text-gray-400">{product.price.toLocaleString("ru-RU")} ₽</p>
-      </div>
+      <div className="flex min-w-0 flex-1 flex-col gap-2 py-1 pr-7 sm:gap-3">
+        <h3 className="break-words text-sm text-black sm:text-base">
+          {product.title}
+        </h3>
 
-      <span className="absolute bottom-4 right-5 text-balck">
-        {product.price.toLocaleString("ru-RU")} ₽
-      </span>
+        <p className="text-sm text-gray-500">
+          {product.price.toLocaleString("ru-RU")} ₽
+        </p>
+
+        <p className="mt-1 font-medium text-black sm:mt-2">
+          {(product.price * quantity).toLocaleString("ru-RU")} ₽
+        </p>
+      </div>
     </div>
   );
 }
