@@ -20,10 +20,9 @@ export default function CartProduct({
 }: Props) {
   return (
     <div
-      className={`relative flex w-full items-start gap-3 rounded-2xl bg-white p-3 transition-shadow sm:items-center sm:gap-5 sm:p-4 ${className}`}
+      className={`relative flex w-full items-start gap-3 rounded-2xl bg-white p-3 transition-shadow sm:items-center sm:gap-5 sm:p-4 ${className ?? ""}`}
     >
       <button
-        aria-label="Удалить товар"
         className="absolute right-3 top-3 text-gray-400 transition-colors hover:text-red-600 sm:right-4 sm:top-4"
         onClick={onRemove}
       >
@@ -34,12 +33,11 @@ export default function CartProduct({
         <img
           src={product.img}
           alt={product.title}
-          className="h-24 w-full object-contain sm:h-40"
+          className="my-auto h-24 w-full object-contain sm:h-40"
         />
 
         <div className="mt-3 flex items-center gap-2 sm:gap-4">
           <button
-            aria-label="Уменьшить количество"
             onClick={onDecrease}
             disabled={quantity === 1}
             className="rounded-full bg-amber-300 p-1 text-white transition-colors hover:bg-orange-400 disabled:cursor-not-allowed disabled:opacity-40"
@@ -47,10 +45,9 @@ export default function CartProduct({
             <Minus size={16} />
           </button>
 
-          <span className="min-w-4 text-center text-sm">{quantity}</span>
+          <span className="min-w-4 text-center">{quantity}</span>
 
           <button
-            aria-label="Увеличить количество"
             onClick={onIncrease}
             className="rounded-full bg-amber-300 p-1 text-white transition-colors hover:bg-orange-400"
           >
@@ -64,14 +61,14 @@ export default function CartProduct({
           {product.title}
         </h3>
 
-        <p className="text-sm text-gray-500">
-          {product.price.toLocaleString("ru-RU")} ₽
-        </p>
-
-        <p className="mt-1 font-medium text-black sm:mt-2">
-          {(product.price * quantity).toLocaleString("ru-RU")} ₽
+        <p className="text-gray-500">
+          {product.price} ₽
         </p>
       </div>
+
+      <span className="absolute bottom-4 right-5 text-gray-800">
+        {(product.price * quantity)} ₽
+      </span>
     </div>
   );
 }

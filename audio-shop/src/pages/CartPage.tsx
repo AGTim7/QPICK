@@ -1,7 +1,9 @@
+import { useState } from "react";
 import CartProduct from "../components/CartProduct";
 import { Container } from "../components/Container";
 import { useCartContext } from "../context/CartContext";
 import { AnimatePresence, motion } from "motion/react";
+import CheckoutModal from "../components/CheckoutModal";
 
 function CartPage() {
   const {
@@ -12,6 +14,8 @@ function CartPage() {
     increaseQuantity,
     decreaseQuantity,
   } = useCartContext();
+
+  const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
 
   return (
     <main className="mt-6 sm:mt-8">
@@ -63,12 +67,20 @@ function CartPage() {
               <p className="font-medium">{cartSum.toLocaleString("ru-RU")} ₽</p>
             </div>
 
-            <button className="w-full rounded-4xl h-18 bg-black text-sm text-white transition-colors hover:bg-orange-500 hover:text-black sm:py-4 sm:text-base">
+            <button onClick={() => setIsCheckoutOpen(true)} className="w-full rounded-4xl h-18 bg-black text-sm text-white transition-colors hover:bg-orange-500 hover:text-black sm:py-4 sm:text-base">
               Перейти к оформлению
             </button>
           </div>
         </div>
       </Container>
+      {isCheckoutOpen && (
+        <CheckoutModal
+          onClose={() => setIsCheckoutOpen(false)}
+          onComplete={() => {
+            // Здесь можно показать уведомление об успешном демо-заказе.
+          }}
+        />
+      )}
     </main>
   );
 }

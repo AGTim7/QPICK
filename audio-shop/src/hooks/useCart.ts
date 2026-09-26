@@ -11,7 +11,7 @@ export interface CartItem {
 export function useCart() {
   const [products, setProducts] = useState<CartItem[]>(() => {
     try {
-      const savedCart = localStorage.getItem(CART_STORAGE_KEY);
+      const savedCart = sessionStorage.getItem(CART_STORAGE_KEY);
 
       if (!savedCart) return [];
 
@@ -22,7 +22,7 @@ export function useCart() {
 
         parsed.forEach((product: Product) => {
           const existing = result.find(
-            (item) => item.product.id === product.id
+            (item) => item.product.id === product.id,
           );
 
           if (existing) {
@@ -42,17 +42,14 @@ export function useCart() {
   });
 
   useEffect(() => {
-    localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(products));
+    sessionStorage.setItem(CART_STORAGE_KEY, JSON.stringify(products));
   }, [products]);
 
-  const totalValueCart = products.reduce(
-    (sum, item) => sum + item.quantity,
-    0
-  );
+  const totalValueCart = products.reduce((sum, item) => sum + item.quantity, 0);
 
   const cartSum = products.reduce(
     (sum, item) => sum + item.product.price * item.quantity,
-    0
+    0,
   );
 
   function addToCart(product: Product) {
@@ -63,7 +60,7 @@ export function useCart() {
         return prev.map((item) =>
           item.product.id === product.id
             ? { ...item, quantity: item.quantity + 1 }
-            : item
+            : item,
         );
       }
 
@@ -76,8 +73,8 @@ export function useCart() {
       prev.map((item) =>
         item.product.id === productId
           ? { ...item, quantity: item.quantity + 1 }
-          : item
-      )
+          : item,
+      ),
     );
   }
 
@@ -87,24 +84,18 @@ export function useCart() {
         .map((item) =>
           item.product.id === productId
             ? { ...item, quantity: item.quantity - 1 }
-            : item
+            : item,
         )
-        .filter((item) => item.quantity > 0)
+        .filter((item) => item.quantity > 0),
     );
   }
 
   function removeFromCart(productId: number) {
-    setProducts((prev) =>
-      prev.filter((item) => item.product.id !== productId)
-    );
+    setProducts((prev) => prev.filter((item) => item.product.id !== productId));
   }
 
   function removeAllFromCart() {
-    const result = confirm("Вы уверены что хотите очистить корзину?");
-
-    if (result) {
-      setProducts([]);
-    }
+    setProducts([]);
   }
 
   return {
